@@ -27,7 +27,7 @@ public class ContinentalMapPrinter {
 	public static final String stringContinentalMap5 = 
 			  " 1 2 32 4 5\n"
 			+ "2 222 3 4 5\n" 
-			+ "3 2 223 4 5";
+			+ "3 2 223 8848 5";
 	
 	/**
 	 * Input a String with substrings spaced by white-spaces. 
@@ -60,24 +60,43 @@ public class ContinentalMapPrinter {
 		pw.println(ContinentalMapPrinter.findTheFirstLongestNumericString(ContinentalMapPrinter.stringContinentalMap4));
 		pw.println(ContinentalMapPrinter.findTheFirstLongestNumericString(ContinentalMapPrinter.stringContinentalMap5));
 	}
-
-	public static void testSuite01PrintStringContinentalMap(PrintWriter pw) {
+	/**
+	 * Align the elements of a numerical matrix in String format by the width of the largest element.
+	 * @param pw
+	 * @param input
+	 */
+	public static void alignOutputContinentalMap(PrintWriter pw, String input) {
 		// First pass, check max length
-		for (String line : stringContinentalMap.split("\\n")) {
-			pw.println(line);
+		int maxSubstringLength = findTheFirstLongestNumericString(input).length();
+		for (String line : input.split("\\n")) {
+			for (String word : line.trim().split("\\s+")) {
+				pw.printf("%"+maxSubstringLength+"s ", word); 
+			}
+			pw.println();
 		}
 	}
 
 	public static void main(String[] args) {
 		PrintWriter pw = new PrintWriter(System.out, true);
-//		// DONE testSuite02TestFindTheFirstLongestNumericString ( pw);
-//		223
-//		231
-//		1241
-//		5345
-//		222
-//		// True is outflush
-//		testSuite01PrintStringContinentalMap(new PrintWriter(System.out, true));
+		// testSuite02
+		//testSuite02TestFindTheFirstLongestNumericString ( pw);
+		//		223
+		//		231
+		//		1241
+		//		5345
+		//		8848
+		
+		// True is outflush
+		alignOutputContinentalMap(pw, stringContinentalMap);
+		pw.println();
+		alignOutputContinentalMap(pw, stringContinentalMap2);
+		pw.println();
+		alignOutputContinentalMap(pw, stringContinentalMap3);
+		pw.println();
+		alignOutputContinentalMap(pw, stringContinentalMap4);
+		pw.println();
+		alignOutputContinentalMap(pw, stringContinentalMap5);
+		pw.println();
 
 	}
 }
