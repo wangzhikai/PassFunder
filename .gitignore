@@ -27,3 +27,4 @@ src/main/resources/rebel.xml
 # PDT-specific
 .buildpath
 .metadata
+/bin/
