@@ -17,6 +17,9 @@ Github tricks (may be trivial or in-complete)
 	ssh-add
 	cat ~/.ssh/id_rsa.pub # Login to github,click 'username' at  top right, 'edit profile', 'SSH keys', 'Add SSH key', add the cat result
 
-Github username
+Github user contribution resolution 
 ----
-git config --global user.name "githubaccount"
+# If in your working statation, you use this configuration:
+git config --global user.email user@a.com
+# Then go to github, click 'username' at  top right, 'edit profile', 'emails', 'Add email address', then go to your mailbox confirm this address.
+# So even you have multiple public keys, and multiple emails, the contribution is counted to the same github account. In general, emails identify the contribution.
