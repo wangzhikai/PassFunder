@@ -1,6 +1,10 @@
 # NiShang PassFunder
 Continental RockNRollers
 ====
+License
+----
+By reading what is written here, you void any responsibility of Zhikai Wang/www.heteroclinic.net, regarding the github repository including this file. Based on the first sentence, you can use this repository at will.
+
 Github tricks (may be trivial or in-complete)
 ----
 	git config --global http.sslVerify false
