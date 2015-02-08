@@ -16,3 +16,7 @@ Github tricks (may be trivial or in-complete)
 	eval "$(ssh-agent -s)"
 	ssh-add
 	cat ~/.ssh/id_rsa.pub # Login to github,click 'username' at  top right, 'edit profile', 'SSH keys', 'Add SSH key', add the cat result
+
+Github username
+----
+git config --global user.name "githubaccount"
