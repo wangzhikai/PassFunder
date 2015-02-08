@@ -77,6 +77,8 @@ public class ContinentalMapPrinter {
 	}
 
 	public static void main(String[] args) {
+		
+		//True is outflush
 		PrintWriter pw = new PrintWriter(System.out, true);
 		// testSuite02
 		//testSuite02TestFindTheFirstLongestNumericString ( pw);
@@ -86,17 +88,28 @@ public class ContinentalMapPrinter {
 		//		5345
 		//		8848
 		
-		// True is outflush
-		alignOutputContinentalMap(pw, stringContinentalMap);
-		pw.println();
-		alignOutputContinentalMap(pw, stringContinentalMap2);
-		pw.println();
-		alignOutputContinentalMap(pw, stringContinentalMap3);
-		pw.println();
-		alignOutputContinentalMap(pw, stringContinentalMap4);
-		pw.println();
-		alignOutputContinentalMap(pw, stringContinentalMap5);
-		pw.println();
-
+		// testSuite01
+		// 
+		//		alignOutputContinentalMap(pw, stringContinentalMap);
+		//		pw.println();
+		//		alignOutputContinentalMap(pw, stringContinentalMap2);
+		//		pw.println();
+		//		alignOutputContinentalMap(pw, stringContinentalMap3);
+		//		pw.println();
+		//		alignOutputContinentalMap(pw, stringContinentalMap4);
+		//		pw.println();
+		//		alignOutputContinentalMap(pw, stringContinentalMap5);
+		//		pw.println();
+		//		1241    2    3    4    5 
+		//		   2    2    3    4    5 
+		//		   3    2  223    4    5 
+		//
+		//		   1    2    3    4    5 
+		//		   2    2    3    4    5 
+		//		   3    2  223    4 5345 
+		//
+		//		   1    2   32    4    5 
+		//		   2  222    3    4    5 
+		//		   3    2  223 8848    5 
 	}
 }
