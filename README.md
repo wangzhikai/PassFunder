@@ -19,7 +19,6 @@ Github tricks (may be trivial or in-complete)
 
 Github user contribution resolution 
 ----
-# If in your working statation, you use this configuration:
 git config --global user.email user@a.com
-# Then go to github, click 'username' at  top right, 'edit profile', 'emails', 'Add email address', then go to your mailbox confirm this address.
-# So even you have multiple public keys, and multiple emails, the contribution is counted to the same github account. In general, emails identify the contribution.
+
+If in your working statation, you use the above configuration. Then go to github, click 'username' at  top right, 'edit profile', 'emails', 'Add email address', then go to your mailbox confirm this address. So even you have multiple public keys, and multiple emails, the contribution is counted to the same github account. In general, emails identify the contribution.
