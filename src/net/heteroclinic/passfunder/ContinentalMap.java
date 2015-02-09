@@ -8,8 +8,6 @@ import java.util.Map;
  * This is a brain-tease. To find from array elements, monotone (less than not equal) decreasing from adjacent element, leading to all '0's. 
  * Connected zeros is one ocean.
  * The solution is growing the sea level, when all oceans become one BODY, the none-basin (none-prohibited) element is the answer.
- * @author zhikai
- *
  */
 
 //DONE Identify water bodies
