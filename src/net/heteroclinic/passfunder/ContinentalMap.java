@@ -1,15 +1,61 @@
 package net.heteroclinic.passfunder;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 //TODO Identify water bodies
+//TODO Handle basin
+//TODO Manually design other cases
+//     -- trivial move
+//     -- basin
+//TODO Automatically generate a map     
 
 public class ContinentalMap {
-	final int closed = 8848;
+	public static final int closed = 8848;
 	public static final String stringData1 
 		=     "0 0 0 1 2 3 0 \n"
 			+ "0 1 2 2 4 3 2 \n"
 			+ "2 1 1 3 3 2 0 \n"
 			+ "0 3 3 3 2 3 3";
 	protected int [][] data;
+	
+	public static final int waterBodyLimit = 10000; 
+	public int countOceans () {
+		// store <i*l+j, oceanId>
+		Map<Integer,Integer> checkedWaterBodies = new LinkedHashMap<Integer,Integer> ();
+		// store <oceanId,howManyWaterBodiesHere>
+		Map<Integer,Integer> oceanPedia = new LinkedHashMap<Integer,Integer> ();
+		// We come from north-west
+		for (int i = 0 ; i < data.length; i++) {
+			for (int j = 0; j <data[i].length; j++) {
+				if ( 0 == data[i][j] ) {
+					// check west
+					if ( j-1 >=0 && data[i][j-1]==0 && checkedWaterBodies.containsKey( i*waterBodyLimit + j-1)) {
+						int currentOceanId = checkedWaterBodies.get( i*waterBodyLimit + j-1);
+						checkedWaterBodies.put(i*waterBodyLimit + j, currentOceanId);
+						int newCount = oceanPedia.get(currentOceanId)+1;
+						oceanPedia.put(currentOceanId, newCount);
+					}
+					// check north
+					else if ( i-1>=0 && data[i-1][j]==0 && checkedWaterBodies.containsKey((i-1)*waterBodyLimit + j) ) {
+						int currentOceanId = checkedWaterBodies.get( (i-1)*waterBodyLimit + j);
+						checkedWaterBodies.put(i*waterBodyLimit + j, currentOceanId);		
+						int newCount = oceanPedia.get(currentOceanId)+1;
+						oceanPedia.put(currentOceanId, newCount);
+					}
+					// none above is water, a new ocean discovered
+					else {
+						int newOceanId = oceanPedia.size()+1;
+						oceanPedia.put(newOceanId, 1);
+						checkedWaterBodies.put(i*waterBodyLimit + j, newOceanId);	
+					}
+				}
+ 			}
+		}
+		return oceanPedia.size();
+	}
 	
 	public ContinentalMap(String input) {
 		String [] rows = input.trim().split("\\n");
@@ -63,10 +109,11 @@ public class ContinentalMap {
 		return result;
 	}
 	public static void main(String[] args) {
-		// TODO init a map
+		// Init a map
 		ContinentalMap continentalMap = new ContinentalMap(stringData1 );
-		// TODO print map
+		// Print map
 		while (!continentalMap.checkFloodedCondition()) {
+			System.out.println("Oceans count = " + continentalMap.countOceans ());
 			continentalMap.printData();
 			continentalMap.flood();
 		}
