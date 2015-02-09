@@ -21,4 +21,4 @@ Github user contribution resolution
 ----
 git config --global user.email user@a.com
 
-If in your work station, you use the above configuration, then go to github, click 'username' at  top right, 'edit profile', 'emails', 'Add email address', then go to your mailbox confirm this address. So even you have multiple public keys, and multiple emails, the contribution is counted to the same github account. In general, emails identify the contribution.
+If in your work station, you use the above configuration, then go to github, click 'username' at  top right, 'edit profile', 'emails', 'Add email address', then go to your mailbox confirm this address. So even you have multiple public keys, and multiple emails, the contribution is counted to the same github account. In general, emails identify the contribution. Looks like github uses EST.
