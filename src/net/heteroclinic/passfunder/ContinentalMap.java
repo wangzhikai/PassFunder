@@ -13,10 +13,8 @@ import java.util.Map;
  */
 
 //DONE Identify water bodies
-//TODO Handle basin
-//TODO Manually design other cases
-//     -- trivial move
-//     -- basin
+//DONE Manually design other cases: trivial change
+//TODO Handle basin : in StringData1 e.g. (3,4) = 2 is a basin. No water can flow from it. So it is a not a flood-able element.
 //TODO Automatically generate a map     
 
 public class ContinentalMap {
@@ -26,6 +24,14 @@ public class ContinentalMap {
 			+ "0 1 2 2 4 3 2 \n"
 			+ "2 1 1 3 3 2 0 \n"
 			+ "0 3 3 3 2 3 3";
+	public static final String stringData2 
+	=    "0 0 2 0\n"
+			+ " 0 1 1 3\n"
+			+ " 0 2 1 3\n"
+			+ " 1 2 3 3\n"
+			+ " 2 4 3 2\n"
+			+ " 3 3 2 3\n"
+			+ " 0 2 0 3";
 	protected int [][] data;
 	
 	public static final int waterBodyLimit = 10000; 
@@ -115,16 +121,44 @@ public class ContinentalMap {
 		}
 		return result;
 	}
+	
+	public void showResult () {
+		loop1 : for (int i = 0 ; i < data.length; i++) {
+			loop2 : for (int j = 0; j <data[i].length; j++) {
+				if (data[i][j] != 0 && data[i][j]!= closed)  {
+					System.out.printf("Element at (%d,%d) \n",i,j);
+
+				}
+ 			}
+		}
+	}
 	public static void main(String[] args) {
+		System.out.println("Test case I");
 		// Init a map
 		ContinentalMap continentalMap = new ContinentalMap(stringData1 );
 		// Print map
 		while (!continentalMap.checkFloodedCondition()) {
-			System.out.println("Oceans count = " + continentalMap.countOceans ());
+			int oceansCount = continentalMap.countOceans ();
+			System.out.println("Oceans count = " +oceansCount);
+			if (oceansCount == 1) {
+				continentalMap.showResult();
+			}
 			continentalMap.printData();
 			continentalMap.flood();
 		}
-
+		
+		System.out.println("Test case II");
+		// Init a map
+		continentalMap = new ContinentalMap(stringData2 );
+		// Print map
+		while (!continentalMap.checkFloodedCondition()) {
+			int oceansCount = continentalMap.countOceans ();
+			System.out.println("Oceans count = " +oceansCount);
+			if (oceansCount == 1) {
+				continentalMap.showResult();
+			}
+			continentalMap.printData();
+			continentalMap.flood();
+		}
 	}
-
 }
