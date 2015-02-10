@@ -1,5 +1,6 @@
 package net.heteroclinic.passfunder;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.Map.Entry;
 /**
  * This is a brain-tease. To find given array elements (zero, one or many), from them there are monotone (less than not equal) decreasing continuous paths, leading to all oceans. 
  * Connected zeros is one ocean.
- * The solution is growing the sea level, when all oceans become one BODY, the none-basin (none-prohibited) element is the answer.
+ * The solution is growing the sea level, when all oceans become one BODY, the none-basin (none-prohibited) elements are the answers.
  */
 
 //DONE Identify water bodies
@@ -16,8 +17,9 @@ import java.util.Map.Entry;
 //TODO Handle basin : in StringData1 e.g. (3,4) = 2 is a basin. No water can flow from it. So it is a not a flood-able element.
 //TODO Rewrite post flood condition check
 //TODO Test above
-//TODO 
-//TODO Manually design other cases: trivial change
+//TODO Change System.out to PrintWriter 
+//TODO Manually design other cases
+//
 //TODO Automatically generate a map     
 
 public class ContinentalMap {
@@ -182,14 +184,64 @@ public class ContinentalMap {
 		}
 	}
 	 
-		
+	/**
+	 * TODO continuous flooding
+	 */
 	public void flood () {
-		// TODO continuous flooding
+		// First pass, identify flood-able zones (connected '1's, adjacent to at least one ocean, same thing as identifying oceans)
+		Map<Integer,List<Integer>> lowlandPedia = this.markLowLands();
+		// Check water adjacency
+		Map<Integer,List<Integer>> floodableZones = new LinkedHashMap<Integer,List<Integer>> ();
+		Map<Integer,List<Integer>> basinZones = new LinkedHashMap<Integer,List<Integer>> ();
+		for (Entry<Integer,List<Integer>> entry : lowlandPedia.entrySet() ) {
+			boolean isAtwater = false;
+			for (int e: entry.getValue()) {
+				int j = e % waterBodyLimit;
+				int i = e / waterBodyLimit;
+				if ( this.isAtwater(i, j) ) {
+					isAtwater = true;
+					break;
+				}
+			}
+			if (isAtwater) {
+				floodableZones.put(entry.getKey(),entry.getValue());
+			} else {
+				basinZones.put(entry.getKey(),entry.getValue());
+			}
+		}
 		
-		// TODO first pass, identify flood-able zones (continuous '1's, adjacent to at least one ocean, same thing as identifying oceans)
-		// TODO second pass, set flood-able zones to 0. If an element is greater than one, self minus. If a none-flood-able '1', set as closed(8848).
+		// Second pass, flood flood-able zone, mark basins as closed (8848)
+		for (Entry<Integer,List<Integer>> entry : lowlandPedia.entrySet() ) {
+			for (int e: entry.getValue()) {
+				int j = e % waterBodyLimit;
+				int i = e / waterBodyLimit;
+				data[i][j] = data[i][j] -1;
+				if (data[i][j]!=0)
+					throw new RuntimeException("This is an awkward assertion, but it says you are flooding the wrong tile.");
+			}
+		}
 		
-
+		// Mark basins as closed (8848)
+		for (Entry<Integer,List<Integer>> entry : lowlandPedia.entrySet() ) {
+			for (int e: entry.getValue()) {
+				int j = e % waterBodyLimit;
+				int i = e / waterBodyLimit;
+				if (data[i][j]!=1)
+					throw new RuntimeException("This is an awkward assertion, but it says you marked a wrong basin.");
+				data[i][j] = closed;
+			}
+		}
+		
+		// Third pass, de-elevation zones that are not ocean and not 'closed' by 1. 
+		for (int i = 0 ; i < data.length; i++) {
+			for (int j = 0; j <data[i].length; j++) {
+				if (data[i][j] != 0 || data[i][j] !=closed) {
+					data[i][j] -= 1;
+					if (data[i][j]<=0)
+						throw new RuntimeException("This is an awkward assertion, but it says the flooding not work properly.");
+				}
+ 			}
+		}
 	}
 	
 	public void printData () {
@@ -224,17 +276,24 @@ public class ContinentalMap {
 			loop2 : for (int j = 0; j <data[i].length; j++) {
 				if (data[i][j] != 0 && data[i][j]!= closed)  {
 					System.out.printf("Element at (%d,%d) \n",i,j);
-
 				}
  			}
 		}
 	}
 	public static void main(String[] args) {
-		//ContinentalMap continentalMap = new ContinentalMap(stringData1 );
-		//testIsAtWaterFunction(continentalMap);
+		int testCaseCount = 1;
+		// True is autoflush
+		PrintWriter pw = new PrintWriter(System.out, true);
+
+		pw.printf("Test case No.%d",testCaseCount++);
+		ContinentalMap continentalMap = new ContinentalMap(stringData1 );
+		testIsAtWaterFunction(continentalMap);
 		
 		//ContinentalMap continentalMap = new ContinentalMap(stringData1 );
-		//testMarkLowLandsFunction( continentalMap);
+		testMarkLowLandsFunction( continentalMap);
+		
+		
+		
 		
 		/*
 		System.out.println("Test case I");

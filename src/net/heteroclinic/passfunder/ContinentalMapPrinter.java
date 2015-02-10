@@ -90,7 +90,7 @@ public class ContinentalMapPrinter {
 
 	public static void main(String[] args) {
 
-		// True is outflush
+		// True is autoflush
 		PrintWriter pw = new PrintWriter(System.out, true);
 
 		// testSuite02
