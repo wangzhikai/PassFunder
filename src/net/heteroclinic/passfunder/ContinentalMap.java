@@ -13,14 +13,15 @@ import java.util.Map.Entry;
  */
 
 //DONE Identify water bodies
-//TODO Continuous flooding
-//TODO Handle basin : in StringData1 e.g. (3,4) = 2 is a basin. No water can flow from it. So it is a not a flood-able element.
-//TODO Rewrite post flood condition check
-//TODO Test above
-//TODO Change System.out to PrintWriter 
+//DONE Continuous flooding
+//DONE Handle basin : in StringData1 e.g. (3,4) = 2 is a basin. No water can flow from it. So it is a not a flood-able element.
+//DONE Rewrite post flood condition check
+//DONE Test above
+//TODO Change System.out to PrintWriter
+//TODO printData format
 //TODO Manually design other cases
-//
-//TODO Automatically generate a map     
+//Far sights:
+//TODO Automatically generate a map, there is solution, but not easy to guess
 
 public class ContinentalMap {
 	public static final int closed = 8848;
