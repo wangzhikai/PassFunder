@@ -129,8 +129,8 @@ public class ContinentalMap {
 	}
 	
 	/**
-	 * TODO Mark lowlands, adjacent a_{i,j} = 1 
-	 * TODO Test
+	 * DONE Mark lowlands, adjacent a_{i,j} = 1 
+	 * DONE Test
 	 */
 	public Map<Integer,List<Integer>> markLowLands () {
 		// store <i*l+j, lowLandId>
@@ -233,8 +233,9 @@ public class ContinentalMap {
 		//ContinentalMap continentalMap = new ContinentalMap(stringData1 );
 		//testIsAtWaterFunction(continentalMap);
 		
-		ContinentalMap continentalMap = new ContinentalMap(stringData1 );
-		testMarkLowLandsFunction( continentalMap);
+		//ContinentalMap continentalMap = new ContinentalMap(stringData1 );
+		//testMarkLowLandsFunction( continentalMap);
+		
 		/*
 		System.out.println("Test case I");
 		// Init a map
