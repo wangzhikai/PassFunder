@@ -87,12 +87,56 @@ public class ContinentalMap {
 			i++;
 		}
 	}
+	
+	/**
+	 * TODO check if an element is adjacent to water
+	 * TODO test
+	 * The element is water or not does not matter.
+	 * @param i
+	 * @param j
+	 * @return
+	 */
+	public boolean isAtwater (int i, int j) {
+		boolean result = false;
+		// check west
+		if ( j-1 >=0 && data[i][j-1]==0 ) {
+			result = true;
+		}
+		// check north
+		else if ( i-1>=0 && data[i-1][j]==0 ) {
+			result = true;
+		}
+		// check east
+		else if ( j+1 < data[i].length && data[i][j+1]==0 ) {
+			result = true;
+		}
+		// check south
+		else if ( i+1 < data.length && data[i+1][j]==0 ) {
+			result = true;
+		}
+		return result;
+	}
+ 	
+	public static void testIsAtWaterFunction(ContinentalMap continentalMap) {
+		for (int i = 0 ; i < continentalMap.data.length; i++) {
+			for (int j = 0; j <continentalMap.data[i].length; j++) {
+				if (continentalMap.isAtwater (i, j) ) {
+					System.out.printf("(%d,%d)\n",i,j);
+				}
+ 			}
+		}
+	}
 		
 	public void flood () {
-		// continuous flooding
-		// first pass, identify flood-able zones (continuous '1's, adjacent to at least one ocean, same thing as identifying oceans
-		// second pass, set flood-able zones to 0. If an element is greater than one, self minus. If a none-flood-able '1', set as closed(8848).
+		// TODO continuous flooding
 		
+		// TODO first pass, identify flood-able zones (continuous '1's, adjacent to at least one ocean, same thing as identifying oceans)
+		// TODO second pass, set flood-able zones to 0. If an element is greater than one, self minus. If a none-flood-able '1', set as closed(8848).
+		
+		// store <i*l+j, oceanId>
+		Map<Integer,Integer> checkedWaterBodies = new LinkedHashMap<Integer,Integer> ();
+		// store <oceanId,howManyWaterBodiesHere>
+		Map<Integer,Integer> oceanPedia = new LinkedHashMap<Integer,Integer> ();
 		for (int i = 0 ; i < data.length; i++) {
 			for (int j = 0; j <data[i].length; j++) {
 				if ( data[i][j] > 0)  
@@ -139,6 +183,10 @@ public class ContinentalMap {
 		}
 	}
 	public static void main(String[] args) {
+		ContinentalMap continentalMap = new ContinentalMap(stringData1 );
+		testIsAtWaterFunction(continentalMap);
+		
+		/*
 		System.out.println("Test case I");
 		// Init a map
 		ContinentalMap continentalMap = new ContinentalMap(stringData1 );
@@ -152,6 +200,7 @@ public class ContinentalMap {
 			continentalMap.printData();
 			continentalMap.flood();
 		}
+		*/
 
 		/*
 		System.out.println("Test case II");
