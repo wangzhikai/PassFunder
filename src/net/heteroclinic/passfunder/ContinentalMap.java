@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 /**
- * This is a brain-tease. To find from array elements, monotone (less than not equal) decreasing from adjacent element, leading to all '0's. 
+ * This is a brain-tease. To find given array elements (zero, one or many), from them there are monotone (less than not equal) decreasing continuous paths, leading to all oceans. 
  * Connected zeros is one ocean.
  * The solution is growing the sea level, when all oceans become one BODY, the none-basin (none-prohibited) element is the answer.
  */
@@ -89,8 +90,8 @@ public class ContinentalMap {
 	}
 	
 	/**
-	 * TODO check if an element is adjacent to water
-	 * TODO test
+	 * DONE check if an element is adjacent to water
+	 * DONE test
 	 * The element is water or not does not matter.
 	 * @param i
 	 * @param j
@@ -126,6 +127,61 @@ public class ContinentalMap {
  			}
 		}
 	}
+	
+	/**
+	 * TODO Mark lowlands, adjacent a_{i,j} = 1 
+	 * TODO Test
+	 */
+	public Map<Integer,List<Integer>> markLowLands () {
+		// store <i*l+j, lowLandId>
+		Map<Integer,Integer> checkedLowLands = new LinkedHashMap<Integer,Integer> ();
+		// store <oceanId,howManyWaterBodiesHere>
+		Map<Integer,List<Integer>> lowlandPedia = new LinkedHashMap<Integer,List<Integer>> ();
+		for (int i = 0 ; i < data.length; i++) {
+			for (int j = 0; j <data[i].length; j++) {
+				// We come from north-west
+				if ( 1 == data[i][j] ) {
+					// check west
+					if ( j-1 >=0 && data[i][j-1]==1 && checkedLowLands.containsKey( i*waterBodyLimit + j-1)) {
+						int currentLowLandId = checkedLowLands.get( i*waterBodyLimit + j-1);
+						checkedLowLands.put(i*waterBodyLimit + j, currentLowLandId);
+						List<Integer> currentLowlandZone = lowlandPedia.get(currentLowLandId);
+						currentLowlandZone.add(i*waterBodyLimit + j);
+					}
+					// check north
+					else if ( i-1>=0 && data[i-1][j]==1 && checkedLowLands.containsKey( (i-1)*waterBodyLimit + j) ) {
+						int currentLowLandId = checkedLowLands.get((i-1)*waterBodyLimit + j);
+						checkedLowLands.put(i*waterBodyLimit + j, currentLowLandId);
+						List<Integer> currentLowlandZone = lowlandPedia.get(currentLowLandId);
+						currentLowlandZone.add(i*waterBodyLimit + j);
+					}
+					// none above is '1', a new lowlandzone is discovered
+					else {
+						int newLowLandId = lowlandPedia.size()+1;
+						
+						List<Integer> currentLowlandZone = new ArrayList<Integer>();
+						currentLowlandZone.add(i*waterBodyLimit + j);
+						lowlandPedia.put(newLowLandId, currentLowlandZone);
+						checkedLowLands.put(i*waterBodyLimit + j, newLowLandId);	
+					}
+				}
+ 			}
+		}	
+		return lowlandPedia;
+	}
+	public static void testMarkLowLandsFunction(ContinentalMap continentalMap) {
+		Map<Integer,List<Integer>> lowlandPedia = continentalMap.markLowLands();
+		for (Entry<Integer,List<Integer>> entry : lowlandPedia.entrySet() ) {
+			System.out.println(entry.getKey());
+			for (int e: entry.getValue()) {
+				int j = e % waterBodyLimit;
+				int i = e / waterBodyLimit;
+				System.out.printf("(%d,%d) ",i,j);
+			}
+			System.out.println();
+		}
+	}
+	 
 		
 	public void flood () {
 		// TODO continuous flooding
@@ -133,16 +189,7 @@ public class ContinentalMap {
 		// TODO first pass, identify flood-able zones (continuous '1's, adjacent to at least one ocean, same thing as identifying oceans)
 		// TODO second pass, set flood-able zones to 0. If an element is greater than one, self minus. If a none-flood-able '1', set as closed(8848).
 		
-		// store <i*l+j, oceanId>
-		Map<Integer,Integer> checkedWaterBodies = new LinkedHashMap<Integer,Integer> ();
-		// store <oceanId,howManyWaterBodiesHere>
-		Map<Integer,Integer> oceanPedia = new LinkedHashMap<Integer,Integer> ();
-		for (int i = 0 ; i < data.length; i++) {
-			for (int j = 0; j <data[i].length; j++) {
-				if ( data[i][j] > 0)  
-					data[i][j] -= 1;
- 			}
-		}
+
 	}
 	
 	public void printData () {
@@ -183,9 +230,11 @@ public class ContinentalMap {
 		}
 	}
 	public static void main(String[] args) {
-		ContinentalMap continentalMap = new ContinentalMap(stringData1 );
-		testIsAtWaterFunction(continentalMap);
+		//ContinentalMap continentalMap = new ContinentalMap(stringData1 );
+		//testIsAtWaterFunction(continentalMap);
 		
+		ContinentalMap continentalMap = new ContinentalMap(stringData1 );
+		testMarkLowLandsFunction( continentalMap);
 		/*
 		System.out.println("Test case I");
 		// Init a map
