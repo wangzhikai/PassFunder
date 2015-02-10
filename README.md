@@ -1,5 +1,5 @@
-# NiShang PassFunder
-Continental RockNRollers
+# PassFunder
+PassFunder -- continental RockNRollers provide treatment for general brain teases.
 
 License
 ----

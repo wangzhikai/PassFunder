@@ -25,6 +25,7 @@ import java.util.Map.Entry;
 
 public class ContinentalMap {
 	public static final int closed = 8848;
+	public static final int elementMaxLength = new String(""+closed + 1).length();
 	public static final String stringData1 
 		=     "0 0 0 1 2 3 0 \n"
 			+ "0 1 2 2 4 3 2 \n"
@@ -121,11 +122,11 @@ public class ContinentalMap {
 		return result;
 	}
  	
-	public static void testIsAtWaterFunction(ContinentalMap continentalMap) {
+	public static void testIsAtWaterFunction(ContinentalMap continentalMap, PrintWriter pw) {
 		for (int i = 0 ; i < continentalMap.data.length; i++) {
 			for (int j = 0; j <continentalMap.data[i].length; j++) {
 				if (continentalMap.isAtwater (i, j) ) {
-					System.out.printf("(%d,%d)\n",i,j);
+					pw.printf("(%d,%d)\n",i,j);
 				}
  			}
 		}
@@ -172,16 +173,16 @@ public class ContinentalMap {
 		}	
 		return lowlandPedia;
 	}
-	public static void testMarkLowLandsFunction(ContinentalMap continentalMap) {
+	public static void testMarkLowLandsFunction(ContinentalMap continentalMap, PrintWriter pw) {
 		Map<Integer,List<Integer>> lowlandPedia = continentalMap.markLowLands();
 		for (Entry<Integer,List<Integer>> entry : lowlandPedia.entrySet() ) {
-			System.out.println(entry.getKey());
+			pw.println(entry.getKey());
 			for (int e: entry.getValue()) {
 				int j = e % waterBodyLimit;
 				int i = e / waterBodyLimit;
-				System.out.printf("(%d,%d) ",i,j);
+				pw.printf("(%d,%d) ",i,j);
 			}
-			System.out.println();
+			pw.println();
 		}
 	}
 	 
@@ -263,9 +264,9 @@ public class ContinentalMap {
 	public static void testFloodFunctionByManualWatch (ContinentalMap continentalMap, boolean printDebug, PrintWriter pw) {
 		while (!continentalMap.checkFloodedCondition()) {
 			int oceansCount = continentalMap.countOceans ();
-			System.out.println("Oceans count = " +oceansCount);
+			pw.println("Oceans count = " +oceansCount);
 			if (oceansCount == 1) {
-				continentalMap.showResult();
+				continentalMap.showResult(pw);
 			}
 			continentalMap.printData(pw);
 			continentalMap.flood(pw,true);
@@ -275,15 +276,12 @@ public class ContinentalMap {
 	public void printData (PrintWriter pw) {
 		if (null == data)
 			return;
-		String stringData = "";
 		for (int i = 0 ; i < data.length; i++) {
-			String row = "";
 			for (int j = 0; j <data[i].length; j++) {
-				row += data[i][j] + " ";
+				pw.printf("%"+this.elementMaxLength+"d ", data[i][j]);
  			}
-			stringData += row.trim()+"\n";
+			pw.println();
 		}
-		pw.println(stringData);
 	}
 	
 	public boolean checkFloodedCondition () {
@@ -299,11 +297,11 @@ public class ContinentalMap {
 		return result;
 	}
 	
-	public void showResult () {
+	public void showResult (PrintWriter pw) {
 		loop1 : for (int i = 0 ; i < data.length; i++) {
 			loop2 : for (int j = 0; j <data[i].length; j++) {
 				if (data[i][j] != 0 && data[i][j]!= closed)  {
-					System.out.printf("Element at (%d,%d) \n",i,j);
+					pw.printf("Element at (%d,%d) \n",i,j);
 				}
  			}
 		}
@@ -317,14 +315,14 @@ public class ContinentalMap {
 		// Test 1
 		pw.printf("Test case No.%d\n",testCaseCount);
 		ContinentalMap continentalMap = new ContinentalMap(stringData1 );
-		testIsAtWaterFunction(continentalMap);
+		testIsAtWaterFunction(continentalMap,pw);
 		testCaseCount++;
 		pw.println();
 		
 		//ContinentalMap continentalMap = new ContinentalMap(stringData1 );
 		// Test 2
 		pw.printf("Test case No.%d\n",testCaseCount);
-		testMarkLowLandsFunction( continentalMap);
+		testMarkLowLandsFunction( continentalMap,pw);
 		testCaseCount++;
 		pw.println();
 		
