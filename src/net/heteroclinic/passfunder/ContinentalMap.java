@@ -187,9 +187,12 @@ public class ContinentalMap {
 	/**
 	 * TODO continuous flooding
 	 */
-	public void flood () {
+	public void flood (PrintWriter pw) {
+		flood (pw,false);
+	}
+	public void flood (PrintWriter pw, boolean printDebug) {
 		// First pass, identify flood-able zones (connected '1's, adjacent to at least one ocean, same thing as identifying oceans)
-		Map<Integer,List<Integer>> lowlandPedia = this.markLowLands();
+		Map<Integer,List<Integer>> lowlandPedia =markLowLands();
 		// Check water adjacency
 		Map<Integer,List<Integer>> floodableZones = new LinkedHashMap<Integer,List<Integer>> ();
 		Map<Integer,List<Integer>> basinZones = new LinkedHashMap<Integer,List<Integer>> ();
@@ -198,7 +201,7 @@ public class ContinentalMap {
 			for (int e: entry.getValue()) {
 				int j = e % waterBodyLimit;
 				int i = e / waterBodyLimit;
-				if ( this.isAtwater(i, j) ) {
+				if ( isAtwater(i, j) ) {
 					isAtwater = true;
 					break;
 				}
@@ -211,18 +214,22 @@ public class ContinentalMap {
 		}
 		
 		// Second pass, flood flood-able zone, mark basins as closed (8848)
-		for (Entry<Integer,List<Integer>> entry : lowlandPedia.entrySet() ) {
+		for (Entry<Integer,List<Integer>> entry : floodableZones.entrySet() ) {
 			for (int e: entry.getValue()) {
 				int j = e % waterBodyLimit;
 				int i = e / waterBodyLimit;
 				data[i][j] = data[i][j] -1;
-				if (data[i][j]!=0)
+				if ( data[i][j]!=0)
 					throw new RuntimeException("This is an awkward assertion, but it says you are flooding the wrong tile.");
 			}
 		}
+		if (printDebug) {
+			printData(pw);
+			pw.println();
+		}
 		
 		// Mark basins as closed (8848)
-		for (Entry<Integer,List<Integer>> entry : lowlandPedia.entrySet() ) {
+		for (Entry<Integer,List<Integer>> entry : basinZones.entrySet() ) {
 			for (int e: entry.getValue()) {
 				int j = e % waterBodyLimit;
 				int i = e / waterBodyLimit;
@@ -231,20 +238,40 @@ public class ContinentalMap {
 				data[i][j] = closed;
 			}
 		}
-		
+		if (printDebug) {
+			printData(pw);
+			pw.println();
+		}
 		// Third pass, de-elevation zones that are not ocean and not 'closed' by 1. 
 		for (int i = 0 ; i < data.length; i++) {
-			for (int j = 0; j <data[i].length; j++) {
-				if (data[i][j] != 0 || data[i][j] !=closed) {
+			for (int j = 0; j < data[i].length; j++) {
+				if (data[i][j] != 0 && data[i][j] !=closed) {
 					data[i][j] -= 1;
 					if (data[i][j]<=0)
 						throw new RuntimeException("This is an awkward assertion, but it says the flooding not work properly.");
 				}
  			}
+		}	
+		if (printDebug) {
+			printData(pw);
+			pw.println();
 		}
 	}
 	
-	public void printData () {
+	// TODO
+	public static void testFloodFunctionByManualWatch (ContinentalMap continentalMap, boolean printDebug, PrintWriter pw) {
+		while (!continentalMap.checkFloodedCondition()) {
+			int oceansCount = continentalMap.countOceans ();
+			System.out.println("Oceans count = " +oceansCount);
+			if (oceansCount == 1) {
+				continentalMap.showResult();
+			}
+			continentalMap.printData(pw);
+			continentalMap.flood(pw,true);
+		}
+	}
+	
+	public void printData (PrintWriter pw) {
 		if (null == data)
 			return;
 		String stringData = "";
@@ -255,14 +282,14 @@ public class ContinentalMap {
  			}
 			stringData += row.trim()+"\n";
 		}
-		System.out.println(stringData);
+		pw.println(stringData);
 	}
 	
 	public boolean checkFloodedCondition () {
 		boolean result = true;
 		loop1 : for (int i = 0 ; i < data.length; i++) {
 			loop2 : for (int j = 0; j <data[i].length; j++) {
-				if (data[i][j] != 0) {
+				if (data[i][j] != 0 && data[i][j] !=closed) {
 					result = false;
 					break loop1;
 				}
@@ -280,42 +307,53 @@ public class ContinentalMap {
  			}
 		}
 	}
+	
 	public static void main(String[] args) {
 		int testCaseCount = 1;
 		// True is autoflush
 		PrintWriter pw = new PrintWriter(System.out, true);
 
-		pw.printf("Test case No.%d",testCaseCount++);
+		// Test 1
+		pw.printf("Test case No.%d\n",testCaseCount);
 		ContinentalMap continentalMap = new ContinentalMap(stringData1 );
 		testIsAtWaterFunction(continentalMap);
+		testCaseCount++;
+		pw.println();
 		
 		//ContinentalMap continentalMap = new ContinentalMap(stringData1 );
+		// Test 2
+		pw.printf("Test case No.%d\n",testCaseCount);
 		testMarkLowLandsFunction( continentalMap);
+		testCaseCount++;
+		pw.println();
 		
-		
-		
+		// Test 3
+		pw.printf("Test case No.%d\n",testCaseCount);
+		testFloodFunctionByManualWatch(continentalMap, true, pw);
+		testCaseCount++;
+		pw.println();
+
 		
 		/*
-		System.out.println("Test case I");
-		// Init a map
-		ContinentalMap continentalMap = new ContinentalMap(stringData1 );
-		// Print map
+		// Test 3
+		pw.printf("Test case No.%d\n",testCaseCount);
 		while (!continentalMap.checkFloodedCondition()) {
 			int oceansCount = continentalMap.countOceans ();
 			System.out.println("Oceans count = " +oceansCount);
 			if (oceansCount == 1) {
 				continentalMap.showResult();
 			}
-			continentalMap.printData();
+			continentalMap.printData(pw);
 			continentalMap.flood();
 		}
-		*/
+		testCaseCount++;
+		pw.println();
+*/
 
 		/*
 		System.out.println("Test case II");
 		// Init a map
 		continentalMap = new ContinentalMap(stringData2 );
-		// Print map
 		while (!continentalMap.checkFloodedCondition()) {
 			int oceansCount = continentalMap.countOceans ();
 			System.out.println("Oceans count = " +oceansCount);
