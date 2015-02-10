@@ -11,8 +11,12 @@ import java.util.Map;
  */
 
 //DONE Identify water bodies
-//DONE Manually design other cases: trivial change
+//TODO Continuous flooding
 //TODO Handle basin : in StringData1 e.g. (3,4) = 2 is a basin. No water can flow from it. So it is a not a flood-able element.
+//TODO Rewrite post flood condition check
+//TODO Test above
+//TODO 
+//TODO Manually design other cases: trivial change
 //TODO Automatically generate a map     
 
 public class ContinentalMap {
@@ -83,8 +87,12 @@ public class ContinentalMap {
 			i++;
 		}
 	}
-	
+		
 	public void flood () {
+		// continuous flooding
+		// first pass, identify flood-able zones (continuous '1's, adjacent to at least one ocean, same thing as identifying oceans
+		// second pass, set flood-able zones to 0. If an element is greater than one, self minus. If a none-flood-able '1', set as closed(8848).
+		
 		for (int i = 0 ; i < data.length; i++) {
 			for (int j = 0; j <data[i].length; j++) {
 				if ( data[i][j] > 0)  
@@ -144,7 +152,8 @@ public class ContinentalMap {
 			continentalMap.printData();
 			continentalMap.flood();
 		}
-		
+
+		/*
 		System.out.println("Test case II");
 		// Init a map
 		continentalMap = new ContinentalMap(stringData2 );
@@ -158,5 +167,6 @@ public class ContinentalMap {
 			continentalMap.printData();
 			continentalMap.flood();
 		}
+		*/
 	}
 }
