@@ -13,8 +13,7 @@ import java.util.Map.Entry;
  * The qualifying element(s): throughout the flooding process, any element adjacent to all existing oceans qualifies. Note, as flooding, the number of oceans may decrease.
  * End condition: full of water or 'closed', if there are other tiles, they are qualified solution tiles.
  */
-
-//DONE Identify water bodies
+//TODO There is a BIG bug. Identify water bodies
 //DONE Continuous flooding QED
 //DONE Handle basin : in StringData1 e.g. (3,4) = 2 is a basin. No water can flow from it. So it is a not a flood-able element.
 //DONE Rewrite post flood condition check
@@ -351,15 +350,15 @@ public class ContinentalMap {
 		}
 		// check north
 		if ( i-1>=0 && data[i-1][j]==0 ) {
-			oceanIds.add(i*waterBodyLimit + j-1);
+			oceanIds.add( (i-1)*waterBodyLimit + j);
 		}
 		// check east
 		else if ( j+1 < data[i].length && data[i][j+1]==0 ) {
-			oceanIds.add(i*waterBodyLimit + j-1);
+			oceanIds.add(i*waterBodyLimit + j+1);
 		}
 		// check south
 		else if ( i+1 < data.length && data[i+1][j]==0 ) {
-			oceanIds.add(i*waterBodyLimit + j-1);
+			oceanIds.add( (i+1)*waterBodyLimit + j);
 		}
 		return oceanIds;
 	}
