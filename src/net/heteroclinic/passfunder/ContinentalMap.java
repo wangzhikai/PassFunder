@@ -9,16 +9,20 @@ import java.util.Map.Entry;
 /**
  * This is a brain-tease. To find given array elements (zero, one or many), from them there are monotone (less than not equal) decreasing continuous path(s), leading to all oceans. 
  * Connected zeros is one ocean.
- * The solution is growing the sea level, when all oceans become one BODY, the none-basin (none-prohibited) elements are the answers.
+ * The solution is growing the sea level, until the map is full of water or prohibited tiles/elements marked as 'closed'.
+ * The qualifying element(s): throughout the flooding process, any element adjacent to all existing oceans qualifies. Note, as flooding, the number of oceans may decrease.
+ * End condition: full of water or 'closed', if there are other tiles, they are qualified solution tiles.
  */
 
 //DONE Identify water bodies
 //DONE Continuous flooding
 //DONE Handle basin : in StringData1 e.g. (3,4) = 2 is a basin. No water can flow from it. So it is a not a flood-able element.
-//DONE Rewrite post flood condition check
+//DONE Rewrite post flood condition check, continuous flooding QED
 //DONE Test above
-//TODO Change System.out to PrintWriter
-//TODO printData format
+//DONE Change System.out to PrintWriter
+//DONE printData format
+//TODO Revise the selection of qualified elements, and end condition of the story
+//TODO Implement the selection of qualified elements, and end condition of the story
 //TODO Manually design other cases
 //Far sights:
 //TODO Automatically generate a map, there is solution, but not easy to guess
@@ -187,7 +191,7 @@ public class ContinentalMap {
 	}
 	 
 	/**
-	 * TODO continuous flooding
+	 * DONE continuous flooding
 	 */
 	public void flood (PrintWriter pw) {
 		flood (pw,false);
