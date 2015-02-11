@@ -368,18 +368,47 @@ public class ContinentalMap {
 	// TODO test
 	public boolean checkEndCondition (Map<Integer,Integer> returnSolutionsHere) {
 		Map<Integer,List<Integer>> oceanPedia = this.markOceans();
+		
 		boolean result = true;
 		loop1 : for (int i = 0 ; i < data.length; i++) {
 			loop2 : for (int j = 0; j <data[i].length; j++) {
-				//List<Integer> 
-				if (data[i][j] != 0 && data[i][j] !=closed) {
+				List<Integer> neighboringOceans = this.getNeighboringOceans(i, j, oceanPedia); 
+				if (data[i][j] != 0 && data[i][j] !=closed
+						&& neighboringOceans.size() != oceanPedia.size()) {
 					result = false;
 					break loop1;
+				}
+				if ( data[i][j] != 0 &&
+						neighboringOceans.size() > 0 &&
+						neighboringOceans.size() == oceanPedia.size() 
+						&& !returnSolutionsHere.containsKey(i*waterBodyLimit + j)) {
+					returnSolutionsHere.put(i*waterBodyLimit + j, i*waterBodyLimit + j);
 				}
  			}
 		}
 		return result;
 	}
+	
+	// TODO Test finding the solutions
+	public static void testFindSolutions(ContinentalMap continentalMap,PrintWriter pw, boolean printDebug) {
+		Map<Integer,Integer> returnSolutionsHere = new LinkedHashMap<Integer,Integer>();
+		int c = 0;
+		while (!continentalMap.checkEndCondition(returnSolutionsHere)) {
+			c++;
+			pw.printf("----Flood #%d started----\n",c);
+			continentalMap.flood(pw,printDebug);
+			pw.printf("----Flood #%d   ended----\n",c);
+		}
+		pw.println("The solutions:");
+		for (Entry <Integer,Integer> entry:returnSolutionsHere.entrySet()) {
+			int k = entry.getKey();
+			int j = k % waterBodyLimit;
+			int i = k / waterBodyLimit;
+			pw.printf("(%d,%d) ",i,j);
+		}
+		pw.println();
+	}
+	
 	
 	public void showResult (PrintWriter pw) {
 		loop1 : for (int i = 0 ; i < data.length; i++) {
@@ -415,12 +444,19 @@ public class ContinentalMap {
 		testFloodFunctionByManualWatch(continentalMap, true, pw);
 		testCaseCount++;
 		pw.println();
-
-		// Test 3
+		
+		// Test 4
 		pw.printf("Test case No.%d\n",testCaseCount);
-		testFloodFunctionByManualWatch(continentalMap, true, pw);
+		testFindSolutions(new ContinentalMap(stringData1 ), pw, true);
 		testCaseCount++;
-		pw.println();
+
+		
+
+//		// Test 3
+//		pw.printf("Test case No.%d\n",testCaseCount);
+//		testFloodFunctionByManualWatch(continentalMap, true, pw);
+//		testCaseCount++;
+//		pw.println();
 
 	}
 }
