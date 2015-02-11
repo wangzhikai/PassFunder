@@ -15,13 +15,13 @@ import java.util.Map.Entry;
  */
 
 //DONE Identify water bodies
-//DONE Continuous flooding
+//DONE Continuous flooding QED
 //DONE Handle basin : in StringData1 e.g. (3,4) = 2 is a basin. No water can flow from it. So it is a not a flood-able element.
-//DONE Rewrite post flood condition check, continuous flooding QED
+//DONE Rewrite post flood condition check
 //DONE Test above
 //DONE Change System.out to PrintWriter
 //DONE printData format
-//TODO Revise the selection of qualified elements, and end condition of the story
+//DONE Revise the selection of qualified elements, and end condition of the story
 //TODO Implement the selection of qualified elements, and end condition of the story
 //TODO Manually design other cases
 //Far sights:
@@ -46,6 +46,43 @@ public class ContinentalMap {
 	protected int [][] data;
 	
 	public static final int waterBodyLimit = 10000; 
+	
+	// TODO markOceans 
+	// TODO test
+	public Map<Integer,List<Integer>> markOceans () {
+		// store <i*l+j, oceanId>
+		Map<Integer,Integer> checkedWaterBodies = new LinkedHashMap<Integer,Integer> ();
+		// store <oceanId,howManyWaterBodiesHere>
+		Map<Integer,List<Integer>> oceanPedia = new LinkedHashMap<Integer,List<Integer>> ();
+		// We come from north-west
+		for (int i = 0 ; i < data.length; i++) {
+			for (int j = 0; j <data[i].length; j++) {
+				if ( 0 == data[i][j] ) {
+					// check west
+					if ( j-1 >=0 && data[i][j-1]==0 && checkedWaterBodies.containsKey( i*waterBodyLimit + j-1)) {
+						int currentOceanId = checkedWaterBodies.get( i*waterBodyLimit + j-1);
+						checkedWaterBodies.put(i*waterBodyLimit + j, currentOceanId);
+						oceanPedia.get(currentOceanId).add(i*waterBodyLimit + j);
+					}
+					// check north
+					else if ( i-1>=0 && data[i-1][j]==0 && checkedWaterBodies.containsKey((i-1)*waterBodyLimit + j) ) {
+						int currentOceanId = checkedWaterBodies.get( (i-1)*waterBodyLimit + j);
+						checkedWaterBodies.put(i*waterBodyLimit + j, currentOceanId);
+						oceanPedia.get(currentOceanId).add(i*waterBodyLimit + j);
+					}
+					// none above is water, a new ocean discovered
+					else {
+						int newOceanId = oceanPedia.size()+1;
+						List<Integer> newList = new ArrayList<Integer>();
+						newList.add(i*waterBodyLimit + j);
+						oceanPedia.put(newOceanId, newList);
+						checkedWaterBodies.put(i*waterBodyLimit + j, newOceanId);	
+					}
+				}
+ 			}
+		}
+		return oceanPedia;
+	}	
 	public int countOceans () {
 		// store <i*l+j, oceanId>
 		Map<Integer,Integer> checkedWaterBodies = new LinkedHashMap<Integer,Integer> ();
@@ -305,6 +342,45 @@ public class ContinentalMap {
 		return result;
 	}
 	
+	//TODO getNeighboringOceans
+	public List<Integer> getNeighboringOceans (int i, int j, Map<Integer,List<Integer>> oceanPedia) {
+		List<Integer> oceanIds = new ArrayList<Integer>();
+		// check west
+		if ( j-1 >=0 && data[i][j-1]==0 ) {
+			oceanIds.add(i*waterBodyLimit + j-1);
+		}
+		// check north
+		if ( i-1>=0 && data[i-1][j]==0 ) {
+			oceanIds.add(i*waterBodyLimit + j-1);
+		}
+		// check east
+		else if ( j+1 < data[i].length && data[i][j+1]==0 ) {
+			oceanIds.add(i*waterBodyLimit + j-1);
+		}
+		// check south
+		else if ( i+1 < data.length && data[i+1][j]==0 ) {
+			oceanIds.add(i*waterBodyLimit + j-1);
+		}
+		return oceanIds;
+	}
+	
+	// TODO checkEndCondition
+	// TODO test
+	public boolean checkEndCondition (Map<Integer,Integer> returnSolutionsHere) {
+		Map<Integer,List<Integer>> oceanPedia = this.markOceans();
+		boolean result = true;
+		loop1 : for (int i = 0 ; i < data.length; i++) {
+			loop2 : for (int j = 0; j <data[i].length; j++) {
+				//List<Integer> 
+				if (data[i][j] != 0 && data[i][j] !=closed) {
+					result = false;
+					break loop1;
+				}
+ 			}
+		}
+		return result;
+	}
+	
 	public void showResult (PrintWriter pw) {
 		loop1 : for (int i = 0 ; i < data.length; i++) {
 			loop2 : for (int j = 0; j <data[i].length; j++) {
@@ -340,36 +416,11 @@ public class ContinentalMap {
 		testCaseCount++;
 		pw.println();
 
-		
-		/*
 		// Test 3
 		pw.printf("Test case No.%d\n",testCaseCount);
-		while (!continentalMap.checkFloodedCondition()) {
-			int oceansCount = continentalMap.countOceans ();
-			System.out.println("Oceans count = " +oceansCount);
-			if (oceansCount == 1) {
-				continentalMap.showResult();
-			}
-			continentalMap.printData(pw);
-			continentalMap.flood();
-		}
+		testFloodFunctionByManualWatch(continentalMap, true, pw);
 		testCaseCount++;
 		pw.println();
-*/
 
-		/*
-		System.out.println("Test case II");
-		// Init a map
-		continentalMap = new ContinentalMap(stringData2 );
-		while (!continentalMap.checkFloodedCondition()) {
-			int oceansCount = continentalMap.countOceans ();
-			System.out.println("Oceans count = " +oceansCount);
-			if (oceansCount == 1) {
-				continentalMap.showResult();
-			}
-			continentalMap.printData();
-			continentalMap.flood();
-		}
-		*/
 	}
 }
