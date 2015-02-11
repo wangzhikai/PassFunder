@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 /**
- * This is a brain-tease. To find given array elements (zero, one or many), from them there are monotone (less than not equal) decreasing continuous paths, leading to all oceans. 
+ * This is a brain-tease. To find given array elements (zero, one or many), from them there are monotone (less than not equal) decreasing continuous path(s), leading to all oceans. 
  * Connected zeros is one ocean.
  * The solution is growing the sea level, when all oceans become one BODY, the none-basin (none-prohibited) elements are the answers.
  */
@@ -193,6 +193,11 @@ public class ContinentalMap {
 		flood (pw,false);
 	}
 	public void flood (PrintWriter pw, boolean printDebug) {
+		if (printDebug) {
+			printData(pw);
+			pw.println();
+			pw.println("----------");
+		}
 		// First pass, identify flood-able zones (connected '1's, adjacent to at least one ocean, same thing as identifying oceans)
 		Map<Integer,List<Integer>> lowlandPedia =markLowLands();
 		// Check water adjacency
@@ -228,6 +233,7 @@ public class ContinentalMap {
 		if (printDebug) {
 			printData(pw);
 			pw.println();
+			pw.println("----------");
 		}
 		
 		// Mark basins as closed (8848)
@@ -243,6 +249,7 @@ public class ContinentalMap {
 		if (printDebug) {
 			printData(pw);
 			pw.println();
+			pw.println("----------");
 		}
 		// Third pass, de-elevation zones that are not ocean and not 'closed' by 1. 
 		for (int i = 0 ; i < data.length; i++) {
@@ -257,18 +264,15 @@ public class ContinentalMap {
 		if (printDebug) {
 			printData(pw);
 			pw.println();
+			pw.println("----------");
 		}
 	}
 	
-	// TODO
+	// DONE
 	public static void testFloodFunctionByManualWatch (ContinentalMap continentalMap, boolean printDebug, PrintWriter pw) {
 		while (!continentalMap.checkFloodedCondition()) {
 			int oceansCount = continentalMap.countOceans ();
 			pw.println("Oceans count = " +oceansCount);
-			if (oceansCount == 1) {
-				continentalMap.showResult(pw);
-			}
-			continentalMap.printData(pw);
 			continentalMap.flood(pw,true);
 		}
 	}
