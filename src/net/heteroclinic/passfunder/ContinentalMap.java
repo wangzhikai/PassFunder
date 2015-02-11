@@ -41,10 +41,9 @@ public class ContinentalMap {
 			+ " 1 2 3 3\n"
 			+ " 2 4 3 2\n"
 			+ " 3 3 2 3\n"
-			+ " 0 2 0 3";
+			+ " 0 2 0 3";	
+	public static final int waterBodyLimit = 10000;
 	protected int [][] data;
-	
-	public static final int waterBodyLimit = 10000; 
 	
 	// TODO markOceans 
 	// TODO test
@@ -81,7 +80,8 @@ public class ContinentalMap {
  			}
 		}
 		return oceanPedia;
-	}	
+	}
+	
 	public int countOceans () {
 		// store <i*l+j, oceanId>
 		Map<Integer,Integer> checkedWaterBodies = new LinkedHashMap<Integer,Integer> ();
