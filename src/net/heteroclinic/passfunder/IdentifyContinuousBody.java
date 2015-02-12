@@ -68,10 +68,6 @@ class MarkableMap extends SimpleMap {
 				int currentTileId = waterBodyLimit * i + j;
 				int currentType = data[i][j];
 				if (!antiPositionSystem.containsKey(currentTileId)) {
-					// Map<Integer,List<Integer>> currentZone = new
-					// LinkedHashMap<Integer,List<Integer>>();
-					// List<Integer> tilesInThisZone = new ArrayList<Integer>();
-					// tilesInThisZone.add(currentTileId);
 					int currentZoneId = -1;
 					List<Integer> tilesInThisZone;
 					if (null == positionSystem.get(currentType)) {
@@ -96,7 +92,6 @@ class MarkableMap extends SimpleMap {
 				}
 			}
 		}
-
 		return positionSystem;
 	}
 
@@ -132,17 +127,51 @@ class MarkableMap extends SimpleMap {
 			continuationOfOneType(i+1, j, currentType,currentZoneId,tilesInThisZone,antiPositionSystem);
 		}
 	}
+}
 
+class OceanLandMap extends MarkableMap {
+
+	public OceanLandMap(String input) {
+		super(input);
+	}
+	
+	public boolean isATileAtwater (int i, int j) {
+		boolean result = false;
+		// check west
+		if ( j-1 >=0 && data[i][j-1]==0 ) {
+			result = true;
+		}
+		// check north
+		else if ( i-1>=0 && data[i-1][j]==0 ) {
+			result = true;
+		}
+		// check east
+		else if ( j+1 < data[i].length && data[i][j+1]==0 ) {
+			result = true;
+		}
+		// check south
+		else if ( i+1 < data.length && data[i+1][j]==0 ) {
+			result = true;
+		}
+		return result;
+	}
+	
+	public boolean isAZoneAtwater (List<Integer> tilesInThisZone ) {
+		boolean result = false;
+		for (int tile: tilesInThisZone ) {
+			int j = tile % waterBodyLimit;
+			int i = tile / waterBodyLimit;
+			if ( isATileAtwater(i,j) ) {
+				result = true;
+				break;
+			}
+		}
+		return result;
+	}
 }
 
 public class IdentifyContinuousBody {
-	/*
-	 * For Examples (1) 0 0 0 0 1 2 0 0 0 1 1 3 2 1 1 0 0 2 2 1 0 0 2 2 2 1 2 2
-	 * 
-	 * (2) 0 0 0 0 0 1 0 0 0 0 0 2 1 0 0 0 0 1 1 0 0 0 1 1 1 8848 1 1
-	 * 
-	 * (3) 1 0 0 0 0 1 0 0 1 1 0 2 1 0 0 0 0 0 1 0 0 0 1 0 1 8848 1 1
-	 */
+
 	public static final String testString1 = 
 			  " 1     0     0     0     0     1     0 \n"
 			+ " 0     1     1     0     2     1     0 \n"
@@ -155,6 +184,12 @@ public class IdentifyContinuousBody {
 			+ "	1     0     0     0     1     0     0 \n"
 			+ "	0     1     0     1  8848     0     0";
 
+	public static final String validMap1 
+	=     "0 0 0 1 2 3 0 \n"
+		+ "0 1 2 2 4 3 2 \n"
+		+ "2 1 1 3 3 2 0 \n"
+		+ "0 3 3 3 2 3 3";
+	
 	public static void main(String[] args) {
 		int testCaseCount = 1;
 		// True is autoflush
@@ -202,6 +237,50 @@ public class IdentifyContinuousBody {
 				pw.printf("Current tile type %d \n",k);
 				for (Entry<Integer, List<Integer>> entry: positionSystem.get(k).entrySet()  ) {
 					pw.printf("ZoneId=%d : ", entry.getKey());
+					for (int tile: entry.getValue()) {
+						pw.printf("%d ", tile);
+					}
+					pw.println();
+				}
+				pw.println("-------");
+			}
+			testCaseCount++;
+			pw.println("==========");
+		}
+		
+		// TODO Test 4
+		{
+			pw.printf("Test case No.%d\n", testCaseCount);
+			OceanLandMap oceanLandMap = new OceanLandMap(testString1);
+			Map<Integer, Map<Integer, List<Integer>>>  positionSystem = oceanLandMap.markZonesByLandType();
+			TreeSet<Integer> sortedKeys = new TreeSet<Integer>();
+			sortedKeys.addAll(positionSystem.keySet());
+			for (int k : sortedKeys) {
+				pw.printf("Current tile type %d \n",k);
+				for (Entry<Integer, List<Integer>> entry: positionSystem.get(k).entrySet()  ) {
+					pw.printf("ZoneId=%d Atwater=%b : ", entry.getKey(),oceanLandMap.isAZoneAtwater(entry.getValue()));
+					for (int tile: entry.getValue()) {
+						pw.printf("%d ", tile);
+					}
+					pw.println();
+				}
+				pw.println("-------");
+			}
+			testCaseCount++;
+			pw.println("==========");
+		}
+		
+		// TODO Test 5
+		{
+			pw.printf("Test case No.%d\n", testCaseCount);
+			OceanLandMap oceanLandMap = new OceanLandMap(validMap1);
+			Map<Integer, Map<Integer, List<Integer>>>  positionSystem = oceanLandMap.markZonesByLandType();
+			TreeSet<Integer> sortedKeys = new TreeSet<Integer>();
+			sortedKeys.addAll(positionSystem.keySet());
+			for (int k : sortedKeys) {
+				pw.printf("Current tile type %d \n",k);
+				for (Entry<Integer, List<Integer>> entry: positionSystem.get(k).entrySet()  ) {
+					pw.printf("ZoneId=%d Atwater=%b : ", entry.getKey(),oceanLandMap.isAZoneAtwater(entry.getValue()));
 					for (int tile: entry.getValue()) {
 						pw.printf("%d ", tile);
 					}
