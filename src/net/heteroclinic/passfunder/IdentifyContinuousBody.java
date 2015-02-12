@@ -170,6 +170,63 @@ class OceanLandMap extends MarkableMap {
 	}
 }
 
+class FloodableMap extends OceanLandMap {
+
+	public FloodableMap(String input) {
+		super(input);
+	}
+	
+	public boolean getEndOfFloodCondition () {
+		boolean result = true;
+		loop1 : for (int i = 0 ; i < data.length; i++) {
+			loop2 : for (int j = 0; j <data[i].length; j++) {
+				if (data[i][j] != 0 && data[i][j] !=closed) {
+					result = false;
+					break loop1;
+				}
+ 			}
+		}
+		return result;
+	}
+	
+	public void flood(Map<Integer, Map<Integer, List<Integer>>>  positionSystem) {
+		// for '1' zones, if atwater flood to '0'
+		// for '1' zones, if not atwater set to 'closed'
+		int floodableType = 1;
+		Map<Integer, List<Integer>> floodCandidates =  positionSystem.get(floodableType);
+		for (Entry<Integer, List<Integer>> entry : floodCandidates.entrySet() ) {
+			List<Integer> tilesInThisZone = entry.getValue();
+			if (isAZoneAtwater(tilesInThisZone)) {
+				for (int e: tilesInThisZone) {
+					int j = e % waterBodyLimit;
+					int i = e / waterBodyLimit;
+					data[i][j] =0;
+				}
+			} else {
+				for (int e: tilesInThisZone) {
+					int j = e % waterBodyLimit;
+					int i = e / waterBodyLimit;
+					data[i][j] =closed;
+				}
+			}
+		}
+		// any zone > 1 && !closed decrease by 1
+		for (int k : positionSystem.keySet()) {
+			if (k > 1 && k != closed ) {
+				for (Entry<Integer, List<Integer>> entry :positionSystem.get(k).entrySet() ) {
+					List<Integer> tilesInThisZone = entry.getValue();
+					for (int e: tilesInThisZone) {
+						int j = e % waterBodyLimit;
+						int i = e / waterBodyLimit;
+						data[i][j] -= 1;
+					}
+				}
+			}
+		}
+	}
+}
+
+
 public class IdentifyContinuousBody {
 
 	public static final String testString1 = 
@@ -248,7 +305,7 @@ public class IdentifyContinuousBody {
 			pw.println("==========");
 		}
 		
-		// TODO Test 4
+		// Test 4
 		{
 			pw.printf("Test case No.%d\n", testCaseCount);
 			OceanLandMap oceanLandMap = new OceanLandMap(testString1);
@@ -270,7 +327,7 @@ public class IdentifyContinuousBody {
 			pw.println("==========");
 		}
 		
-		// TODO Test 5
+		// Test 5
 		{
 			pw.printf("Test case No.%d\n", testCaseCount);
 			OceanLandMap oceanLandMap = new OceanLandMap(validMap1);
@@ -291,6 +348,41 @@ public class IdentifyContinuousBody {
 			testCaseCount++;
 			pw.println("==========");
 		}
+		
+		// Test 6
+		{
+			pw.printf("Test case No.%d\n", testCaseCount);
+			FloodableMap floodableMap = new FloodableMap(validMap1);
+			int floodCount = 0;
+			while (!floodableMap.getEndOfFloodCondition()) {
+				floodCount++;
+				Map<Integer, Map<Integer, List<Integer>>>  positionSystem = floodableMap.markZonesByLandType();
+				pw.printf("---- flood #%d----\n",floodCount);
+				floodableMap.printData(pw);
+				floodableMap.flood(positionSystem);
+			}
+			
+			
+			/*
+			Map<Integer, Map<Integer, List<Integer>>>  positionSystem = oceanLandMap.markZonesByLandType();
+			TreeSet<Integer> sortedKeys = new TreeSet<Integer>();
+			sortedKeys.addAll(positionSystem.keySet());
+			for (int k : sortedKeys) {
+				pw.printf("Current tile type %d \n",k);
+				for (Entry<Integer, List<Integer>> entry: positionSystem.get(k).entrySet()  ) {
+					pw.printf("ZoneId=%d Atwater=%b : ", entry.getKey(),oceanLandMap.isAZoneAtwater(entry.getValue()));
+					for (int tile: entry.getValue()) {
+						pw.printf("%d ", tile);
+					}
+					pw.println();
+				}
+				pw.println("-------");
+			}
+			*/
+			testCaseCount++;
+			pw.println("==========");
+		}
+
 
 	}
 
