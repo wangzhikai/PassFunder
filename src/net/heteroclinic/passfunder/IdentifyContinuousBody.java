@@ -148,6 +148,12 @@ public class IdentifyContinuousBody {
 			+ " 0     1     1     0     2     1     0 \n"
 			+ "	0     0     0     0     1     0     0 \n"
 			+ "	0     1     0     1  8848     1     1";
+	
+	public static final String testString2 = 
+			  " 1     0     0     0     0     1     0 \n"
+			+ " 1     0     1     0     2     1     0 \n"
+			+ "	1     0     0     0     1     0     0 \n"
+			+ "	0     1     0     1  8848     0     0";
 
 	public static void main(String[] args) {
 		int testCaseCount = 1;
@@ -155,32 +161,57 @@ public class IdentifyContinuousBody {
 		PrintWriter pw = new PrintWriter(System.out, true);
 
 		// Test 1
-		pw.printf("Test case No.%d\n", testCaseCount);
-		SimpleMap simpleMap = new SimpleMap(testString1);
-		simpleMap.printData(pw);
-		testCaseCount++;
-		pw.println("==========");
-		
-		pw.printf("Test case No.%d\n", testCaseCount);
-		MarkableMap markableMap = new MarkableMap(testString1);
-		Map<Integer, Map<Integer, List<Integer>>>  positionSystem = markableMap.markZonesByLandType();
-		TreeSet<Integer> sortedKeys = new TreeSet<Integer>();
-		sortedKeys.addAll(positionSystem.keySet());
-		for (int k : sortedKeys) {
-			pw.printf("Current tile type %d \n",k);
-			for (Entry<Integer, List<Integer>> entry: positionSystem.get(k).entrySet()  ) {
-				pw.printf("ZoneId=%d : ", entry.getKey());
-				for (int tile: entry.getValue()) {
-					pw.printf("%d ", tile);
-				}
-				pw.println();
-			}
-			pw.println("-------");
+		{
+			pw.printf("Test case No.%d\n", testCaseCount);
+			SimpleMap simpleMap = new SimpleMap(testString1);
+			simpleMap.printData(pw);
+			testCaseCount++;
+			pw.println("==========");
 		}
-		testCaseCount++;
-		pw.println("==========");
-
 		
+		// Test 2
+		{
+			pw.printf("Test case No.%d\n", testCaseCount);
+			MarkableMap markableMap = new MarkableMap(testString1);
+			Map<Integer, Map<Integer, List<Integer>>>  positionSystem = markableMap.markZonesByLandType();
+			TreeSet<Integer> sortedKeys = new TreeSet<Integer>();
+			sortedKeys.addAll(positionSystem.keySet());
+			for (int k : sortedKeys) {
+				pw.printf("Current tile type %d \n",k);
+				for (Entry<Integer, List<Integer>> entry: positionSystem.get(k).entrySet()  ) {
+					pw.printf("ZoneId=%d : ", entry.getKey());
+					for (int tile: entry.getValue()) {
+						pw.printf("%d ", tile);
+					}
+					pw.println();
+				}
+				pw.println("-------");
+			}
+			testCaseCount++;
+			pw.println("==========");
+		}
+
+		// Test 3
+		{
+			pw.printf("Test case No.%d\n", testCaseCount);
+			MarkableMap markableMap = new MarkableMap(testString2);
+			Map<Integer, Map<Integer, List<Integer>>>  positionSystem = markableMap.markZonesByLandType();
+			TreeSet<Integer> sortedKeys = new TreeSet<Integer>();
+			sortedKeys.addAll(positionSystem.keySet());
+			for (int k : sortedKeys) {
+				pw.printf("Current tile type %d \n",k);
+				for (Entry<Integer, List<Integer>> entry: positionSystem.get(k).entrySet()  ) {
+					pw.printf("ZoneId=%d : ", entry.getKey());
+					for (int tile: entry.getValue()) {
+						pw.printf("%d ", tile);
+					}
+					pw.println();
+				}
+				pw.println("-------");
+			}
+			testCaseCount++;
+			pw.println("==========");
+		}
 
 	}
 
