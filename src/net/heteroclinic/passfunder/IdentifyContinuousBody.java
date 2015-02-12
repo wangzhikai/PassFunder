@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeSet;
 
 /**
  * TODO Need re-design the marking of connected same tiles.
@@ -157,7 +159,28 @@ public class IdentifyContinuousBody {
 		SimpleMap simpleMap = new SimpleMap(testString1);
 		simpleMap.printData(pw);
 		testCaseCount++;
-		pw.println();
+		pw.println("==========");
+		
+		pw.printf("Test case No.%d\n", testCaseCount);
+		MarkableMap markableMap = new MarkableMap(testString1);
+		Map<Integer, Map<Integer, List<Integer>>>  positionSystem = markableMap.markZonesByLandType();
+		TreeSet<Integer> sortedKeys = new TreeSet<Integer>();
+		sortedKeys.addAll(positionSystem.keySet());
+		for (int k : sortedKeys) {
+			pw.printf("Current tile type %d \n",k);
+			for (Entry<Integer, List<Integer>> entry: positionSystem.get(k).entrySet()  ) {
+				pw.printf("ZoneId=%d : ", entry.getKey());
+				for (int tile: entry.getValue()) {
+					pw.printf("%d ", tile);
+				}
+				pw.println();
+			}
+			pw.println("-------");
+		}
+		testCaseCount++;
+		pw.println("==========");
+
+		
 
 	}
 
