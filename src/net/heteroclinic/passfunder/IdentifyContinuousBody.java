@@ -9,7 +9,10 @@ import java.util.Map.Entry;
 import java.util.TreeSet;
 
 /**
- * TODO Need re-design the marking of connected same tiles.
+ * DONE Need re-design the marking of connected same tiles.
+ * TODO End condition of flooding (disjunction):
+ * 1. all are of water or 'closed'
+ * 2. 
  * 
  * @author zhikai
  */
@@ -355,11 +358,13 @@ public class IdentifyContinuousBody {
 			FloodableMap floodableMap = new FloodableMap(validMap1);
 			int floodCount = 0;
 			while (!floodableMap.getEndOfFloodCondition()) {
-				floodCount++;
 				Map<Integer, Map<Integer, List<Integer>>>  positionSystem = floodableMap.markZonesByLandType();
-				pw.printf("---- flood #%d----\n",floodCount);
+				pw.printf("---- flood #%d BEG----\n",floodCount);
 				floodableMap.printData(pw);
 				floodableMap.flood(positionSystem);
+				pw.printf("---- flood #%d END----\n",floodCount);
+				floodableMap.printData(pw);
+				floodCount++;
 			}
 			
 			

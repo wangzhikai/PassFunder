@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 /**
+ * This file contains a design error. Please check the tests in remodeled class in IdentifyContinuousBody.
  * This is a brain-tease. To find given array elements (zero, one or many), from them there are monotone (less than not equal) decreasing continuous path(s), leading to all oceans. 
  * Connected zeros is one ocean.
  * The solution is growing the sea level, until the map is full of water or prohibited tiles/elements marked as 'closed'.
