@@ -10,9 +10,8 @@ import java.util.TreeSet;
 
 /**
  * DONE Need re-design the marking of connected same tiles.
- * TODO End condition of flooding (disjunction):
- * 1. all are of water or 'closed'
- * 2. 
+ * TODO BFS from each ocean, each ocean has a reachableSet. Than do an intersection.
+ * TODO in QUESTION End condition of flooding (disjunction):
  * 
  * @author zhikai
  */
@@ -229,6 +228,20 @@ class FloodableMap extends OceanLandMap {
 	}
 }
 
+class SmartBFSMap extends OceanLandMap {
+
+	public SmartBFSMap(String input) {
+		super(input);
+	}
+	
+	public void getBFSIntersection () {
+		// TODO Loop though ocean
+	}
+
+	// TODO continuation of each zone (monotone increasing) to build reachable set 
+	
+	
+}
 
 public class IdentifyContinuousBody {
 
