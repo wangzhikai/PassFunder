@@ -306,11 +306,17 @@ class SmartBFSMap extends OceanLandMap {
 			}
 			getReachableZonesByContinuation(startingZoneType,startZone.getKey(), tilesInZone, positionSystem, antiPositionSystem, currentReachableZones,
 					printDebug,pw);
-			
+			reachablesOfEachStartZone.put(startZone.getKey(), currentReachableZones);
 		}
 		
 		// TODO calculate the intersection
+		
+		
+		
+		// TODO Output the correct types getTiles from zoneId
 	}
+	
+
 
 	// TODO continuation of each zone (monotone increasing) to build reachable set. 
 	// The other name of continuation is homotopy.
@@ -383,6 +389,17 @@ class SmartBFSMap extends OceanLandMap {
 }
 
 public class IdentifyContinuousBody {
+	
+	//TODO 
+	public static Set<Integer> getInterSectionOfTwoSets(Set<Integer> a,Set<Integer> b) {
+		Set<Integer> t1 = new HashSet<Integer>();
+		t1.addAll(a);
+		t1.removeAll(b);
+		Set<Integer> t2 = new HashSet<Integer>();
+		t2.addAll(a);
+		t2.removeAll(t1);
+		return t2;
+	}
 
 	public static final String testString1 = 
 			  " 1     0     0     0     0     1     0 \n"
@@ -531,6 +548,24 @@ public class IdentifyContinuousBody {
 			pw.println("==========");
 		}
 
+		// Set<Integer> getInterSectionOfTwoSets(Set<Integer> a,Set<Integer> b)
+		// Test 7
+		{
+			pw.printf("Test case No.%d\n", testCaseCount);
+			Set<Integer> a = new HashSet<Integer>();
+			a.add(1);a.add(3);a.add(5);
+			Set<Integer> b = new HashSet<Integer>();
+			b.add(3);b.add(6);b.add(9);
+			for (int e: getInterSectionOfTwoSets(a,b)) {
+				pw.printf("%d ", e);
+			}
+			pw.println();
+			testCaseCount++;
+			pw.println("==========");
+		}
+
+		 
+		 
 	}
 
 }
