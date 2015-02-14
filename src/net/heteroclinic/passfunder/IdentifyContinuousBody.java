@@ -296,9 +296,10 @@ class SmartBFSMap extends OceanLandMap {
 		// TODO Loop though oceans
 		final int startingZoneType = 0;
 		Map<Integer, List<Integer>> startingZones = positionSystem.get(startingZoneType);
-		Map<Integer, Set<Integer>> reachablesOfEachStartZone = new LinkedHashMap<Integer, Set<Integer>>();
+		Map<Integer, Map<Integer,Integer>> reachablesOfEachStartZone = new LinkedHashMap<Integer, Map<Integer,Integer>>();
 		for (Entry<Integer, List<Integer>> startZone: startingZones.entrySet()) {
-			Set<Integer> currentReachableZones = new LinkedHashSet<Integer>();
+			// <tileId,tileType>
+			Map<Integer,Integer> currentReachableZones = new LinkedHashMap<Integer,Integer>();
 			
 			// TODO Cotinuation of current zone
 			
@@ -310,36 +311,46 @@ class SmartBFSMap extends OceanLandMap {
 
 	// TODO continuation of each zone (monotone increasing) to build reachable set. 
 	// The other name of continuation is homotopy.
-	public void getReachableZonesByContinuation(int zoneType,int zoneId,  List<Integer> tilesInZone
+	public void getReachableZonesByContinuation(int zoneType,int zoneId,  List<Integer> tilesInZone,
+			Map<Integer, Integer> antiPositionSystem, Map<Integer,Integer> currentReachableZones
 			) {
 		// TODO Iterate though current zone's tiles
-		Set<Integer> neighboringTiles = new LinkedHashSet<Integer>();
+		//<tileId,tileType>
+		Map<Integer,Integer> neighboringTiles = new LinkedHashMap<Integer,Integer>();
 		for (int currentTile :tilesInZone ) {
 			// TODO For each tile put all neighboring tiles a new set
 			int j = currentTile % waterBodyLimit;
 			int i = currentTile / waterBodyLimit;
 			// check west
 			if ( j-1 >=0 ) {
-				neighboringTiles.add(i*waterBodyLimit +j-1);
+				neighboringTiles.put(i*waterBodyLimit +j-1,data[i][j-1]);
 			}
 			// check north
 			if ( i-1>=0  ) {
-				neighboringTiles.add((i-1)*waterBodyLimit +j);
+				neighboringTiles.put((i-1)*waterBodyLimit +j,data[i-1][j]);
 			}
 			// check east
 			if ( j+1 < data[i].length ) {
-				neighboringTiles.add(i*waterBodyLimit +j +1);
+				neighboringTiles.put(i*waterBodyLimit +j +1,data[i][j+1]);
 			}
 			// check south
 			if ( i+1 < data.length) {
-				neighboringTiles.add((i+1)*waterBodyLimit +j);
+				neighboringTiles.put((i+1)*waterBodyLimit +j,data[i+1][j-1]);
 			}
 
 		}
 		// TODO Loop through the set of neighboring tiles
-
+		for (Entry<Integer,Integer> neighborTileEntry :neighboringTiles.entrySet() ) {
 			// TODO Get its type and ZoneId
+			int neighborType = neighborTileEntry.getValue();
+			int neighborId = neighborTileEntry.getKey();
 			// TODO Add the ZoneId to set currentReachables, if the neighbor type > current tile type
+			if ( neighborType > zoneType ) {
+				int neighborZoneId = antiPositionSystem.get(neighborId);
+				currentReachableZones.put(neighborZoneId, neighborType);
+			}
+		}
+
 		
 		// TODO Loop through currentReachableZones
 		    // TODO Continuation of each zone by recursive call of getReachableZonesByContinuation
