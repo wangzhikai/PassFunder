@@ -312,6 +312,7 @@ class SmartBFSMap extends OceanLandMap {
 	// TODO continuation of each zone (monotone increasing) to build reachable set. 
 	// The other name of continuation is homotopy.
 	public void getReachableZonesByContinuation(int zoneType,int zoneId,  List<Integer> tilesInZone,
+			Map<Integer, Map<Integer, List<Integer>>> positionSystem,
 			Map<Integer, Integer> antiPositionSystem, Map<Integer,Integer> currentReachableZones
 			) {
 		// TODO Iterate though current zone's tiles
@@ -351,13 +352,14 @@ class SmartBFSMap extends OceanLandMap {
 			}
 		}
 
-		
 		// TODO Loop through currentReachableZones
+		for (Entry<Integer,Integer> zone: currentReachableZones.entrySet()) {
 		    // TODO Continuation of each zone by recursive call of getReachableZonesByContinuation
-			
+			List<Integer> tilesInNeighborZone = positionSystem.get(zone.getValue()).get(zone.getKey());
+			getReachableZonesByContinuation(zone.getValue(),zone.getKey(), tilesInNeighborZone,
+					 positionSystem, antiPositionSystem, currentReachableZones);
+		}
 	}
-	
-	
 }
 
 public class IdentifyContinuousBody {
