@@ -313,8 +313,9 @@ class SmartBFSMap extends OceanLandMap {
 		Set<Integer> a = new HashSet<Integer>();
 		int count = 0;
 		for (Map<Integer,Integer> oneZone:reachablesOfEachStartZone.values() ) {
-			if (0 == count) {
-				a = oneZone.keySet();
+			if (0 == count++) {
+				//a = oneZone.keySet();
+				a.addAll(oneZone.keySet());
 			} else {
 				Set<Integer> b = oneZone.keySet();
 				a = IdentifyContinuousBody.getInterSectionOfTwoSets(a, b);
