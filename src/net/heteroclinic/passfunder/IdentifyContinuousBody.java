@@ -280,7 +280,6 @@ class SmartBFSMap extends OceanLandMap {
 		sortedKeys.addAll(positionSystem.keySet());
 
 		if (printDebug) {
-			
 			for (int k : sortedKeys) {
 				pw.printf("Current tile type %d \n",k);
 				for (Entry<Integer, List<Integer>> entry: positionSystem.get(k).entrySet()  ) {
@@ -300,9 +299,13 @@ class SmartBFSMap extends OceanLandMap {
 		for (Entry<Integer, List<Integer>> startZone: startingZones.entrySet()) {
 			// <tileId,tileType>
 			Map<Integer,Integer> currentReachableZones = new LinkedHashMap<Integer,Integer>();
-			
+			List<Integer> tilesInZone = positionSystem.get( startingZoneType ).get(startZone.getKey());
 			// TODO Cotinuation of current zone
-			
+			if (printDebug) {
+				pw.printf("---- Sweeping Zone %d\n",startZone.getKey());
+			}
+			getReachableZonesByContinuation(startingZoneType,startZone.getKey(), tilesInZone, positionSystem, antiPositionSystem, currentReachableZones,
+					printDebug,pw);
 			
 		}
 		
@@ -313,8 +316,8 @@ class SmartBFSMap extends OceanLandMap {
 	// The other name of continuation is homotopy.
 	public void getReachableZonesByContinuation(int zoneType,int zoneId,  List<Integer> tilesInZone,
 			Map<Integer, Map<Integer, List<Integer>>> positionSystem,
-			Map<Integer, Integer> antiPositionSystem, Map<Integer,Integer> currentReachableZones
-			) {
+			Map<Integer, Integer> antiPositionSystem, Map<Integer,Integer> currentReachableZones,
+			boolean printDebug,PrintWriter pw) {
 		// TODO Iterate though current zone's tiles
 		//<tileId,tileType>
 		Map<Integer,Integer> neighboringTiles = new LinkedHashMap<Integer,Integer>();
@@ -336,10 +339,12 @@ class SmartBFSMap extends OceanLandMap {
 			}
 			// check south
 			if ( i+1 < data.length) {
-				neighboringTiles.put((i+1)*waterBodyLimit +j,data[i+1][j-1]);
+				neighboringTiles.put((i+1)*waterBodyLimit +j,data[i+1][j]);
 			}
 
 		}
+		
+		Map<Integer,Integer> qualifiedNeighboringZones = new LinkedHashMap<Integer,Integer>();
 		// TODO Loop through the set of neighboring tiles
 		for (Entry<Integer,Integer> neighborTileEntry :neighboringTiles.entrySet() ) {
 			// TODO Get its type and ZoneId
@@ -349,15 +354,30 @@ class SmartBFSMap extends OceanLandMap {
 			if ( neighborType > zoneType ) {
 				int neighborZoneId = antiPositionSystem.get(neighborId);
 				currentReachableZones.put(neighborZoneId, neighborType);
+				qualifiedNeighboringZones.put(neighborZoneId, neighborType);
 			}
 		}
 
-		// TODO Loop through currentReachableZones
-		for (Entry<Integer,Integer> zone: currentReachableZones.entrySet()) {
+		// TODO Loop through neighboringZones
+		for (Entry<Integer,Integer> zone: qualifiedNeighboringZones.entrySet()) {
 		    // TODO Continuation of each zone by recursive call of getReachableZonesByContinuation
 			List<Integer> tilesInNeighborZone = positionSystem.get(zone.getValue()).get(zone.getKey());
 			getReachableZonesByContinuation(zone.getValue(),zone.getKey(), tilesInNeighborZone,
-					 positionSystem, antiPositionSystem, currentReachableZones);
+					 positionSystem, antiPositionSystem, currentReachableZones,printDebug,pw);
+		}
+		
+		if (printDebug) {
+			pw.printf("Reachable in this round :");
+			for (Entry<Integer,Integer> entry:qualifiedNeighboringZones.entrySet() ) {
+				pw.printf("[%d,%d] ",entry.getKey(),entry.getValue() );
+			}
+			pw.println();
+			pw.printf("Accumulated  reachables :");
+			for (Entry<Integer,Integer> entry:currentReachableZones.entrySet() ) {
+				pw.printf("[%d,%d] ",entry.getKey(),entry.getValue() );
+			}
+			pw.println();
+			
 		}
 	}
 }
