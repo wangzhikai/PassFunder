@@ -2,10 +2,12 @@ package net.heteroclinic.passfunder;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeSet;
 
 /**
@@ -291,12 +293,30 @@ class SmartBFSMap extends OceanLandMap {
 			}
 		}
 		// TODO Loop though oceans
-		
-		
-
+		final int startingZoneType = 0;
+		Map<Integer, List<Integer>> startingZones = positionSystem.get(startingZoneType);
+		Map<Integer, Set<Integer>> reachablesOfEachStartZone = new LinkedHashMap<Integer, Set<Integer>>();
+		for (int startZone: startingZones.keySet()) {
+			Set<Integer> currentReachableZones = new HashSet<Integer>();
+		}
 	}
 
-	// TODO continuation of each zone (monotone increasing) to build reachable set 
+	// TODO continuation of each zone (monotone increasing) to build reachable set. 
+	// The other name of continuation is homotopy.
+	public void getReachableZonesByContinuation() {
+		// TODO Iterate though current zone's tiles
+		
+			// TODO For each tile put all neighboring tiles a new set
+		
+		// TODO Loop through the set of neighboring tiles
+
+			// TODO Get its type and ZoneId
+			// TODO Add the ZoneId to set currentReachables
+		
+		// TODO Loop through currentReachableZones
+		    // TODO Continuation of each zone by recursive call of getReachableZonesByContinuation
+			
+	}
 	
 	
 }
