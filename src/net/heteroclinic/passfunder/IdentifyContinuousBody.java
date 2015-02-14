@@ -13,9 +13,8 @@ import java.util.TreeSet;
 
 /**
  * DONE Need re-design the marking of connected same tiles.
- * TODO BFS from each ocean, each ocean has a reachableSet. Than do an intersection.
- * TODO in QUESTION End condition of flooding (disjunction):
- * 
+ * BFS from each ocean, each ocean has a reachableSet. Than do an intersection of all sets.
+ * Flooding is not used for get the solution. But it is useful to find 'closed' zones.
  * @author zhikai
  */
 
