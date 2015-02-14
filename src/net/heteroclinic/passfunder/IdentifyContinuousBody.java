@@ -234,8 +234,66 @@ class SmartBFSMap extends OceanLandMap {
 		super(input);
 	}
 	
-	public void getBFSIntersection () {
-		// TODO Loop though ocean
+	public static final int typesLimit = 10000;
+	
+	public void getBFSIntersectionOfOceans (boolean printDebug,PrintWriter pw) {
+		// TODO Rewrite mark zones method here
+		// <type,<zoneIdofSameType,listofTilesInOneZone>>
+		Map<Integer, Map<Integer, List<Integer>>> positionSystem = new LinkedHashMap<Integer, Map<Integer, List<Integer>>>();
+		// <tileId,zoneId>
+		Map<Integer, Integer> antiPositionSystem = new LinkedHashMap<Integer, Integer>();
+
+		loop1: for (int i = 0; i < data.length; i++) {
+			loop2: for (int j = 0; j < data[i].length; j++) {
+				int currentTileId = waterBodyLimit * i + j;
+				int currentType = data[i][j];
+				if (!antiPositionSystem.containsKey(currentTileId)) {
+					int currentZoneId = -1;
+					List<Integer> tilesInThisZone;
+					if (null == positionSystem.get(currentType)) {
+						Map<Integer, List<Integer>> zonesOfOneType = new LinkedHashMap<Integer, List<Integer>>();
+						tilesInThisZone = new ArrayList<Integer>();
+						tilesInThisZone.add(currentTileId);
+						currentZoneId = 1 + typesLimit*currentType ;
+						zonesOfOneType.put(currentZoneId, tilesInThisZone);
+						positionSystem.put(currentType, zonesOfOneType);
+						antiPositionSystem.put(currentTileId, currentZoneId);
+					} else {
+						Map<Integer, List<Integer>> zonesOfOneType = positionSystem
+								.get(currentType);
+						tilesInThisZone = new ArrayList<Integer>();
+						tilesInThisZone.add(currentTileId);
+						currentZoneId = zonesOfOneType.size() + 1 + typesLimit*currentType;
+						zonesOfOneType.put(currentZoneId, tilesInThisZone);
+						positionSystem.put(currentType, zonesOfOneType);
+						antiPositionSystem.put(currentTileId, currentZoneId);
+					}
+					continuationOfOneType(i, j, currentType,currentZoneId,tilesInThisZone,antiPositionSystem);
+				}
+			}
+		}
+
+		TreeSet<Integer> sortedKeys = new TreeSet<Integer>();
+		sortedKeys.addAll(positionSystem.keySet());
+
+		if (printDebug) {
+			
+			for (int k : sortedKeys) {
+				pw.printf("Current tile type %d \n",k);
+				for (Entry<Integer, List<Integer>> entry: positionSystem.get(k).entrySet()  ) {
+					pw.printf("ZoneId=%d Atwater=%b : ", entry.getKey(),isAZoneAtwater(entry.getValue()));
+					for (int tile: entry.getValue()) {
+						pw.printf("%d ", tile);
+					}
+					pw.println();
+				}
+				pw.println("-------");
+			}
+		}
+		// TODO Loop though oceans
+		
+		
+
 	}
 
 	// TODO continuation of each zone (monotone increasing) to build reachable set 
@@ -379,28 +437,18 @@ public class IdentifyContinuousBody {
 				floodableMap.printData(pw);
 				floodCount++;
 			}
-			
-			
-			/*
-			Map<Integer, Map<Integer, List<Integer>>>  positionSystem = oceanLandMap.markZonesByLandType();
-			TreeSet<Integer> sortedKeys = new TreeSet<Integer>();
-			sortedKeys.addAll(positionSystem.keySet());
-			for (int k : sortedKeys) {
-				pw.printf("Current tile type %d \n",k);
-				for (Entry<Integer, List<Integer>> entry: positionSystem.get(k).entrySet()  ) {
-					pw.printf("ZoneId=%d Atwater=%b : ", entry.getKey(),oceanLandMap.isAZoneAtwater(entry.getValue()));
-					for (int tile: entry.getValue()) {
-						pw.printf("%d ", tile);
-					}
-					pw.println();
-				}
-				pw.println("-------");
-			}
-			*/
 			testCaseCount++;
 			pw.println("==========");
 		}
 
+		// Test 7
+		{
+			pw.printf("Test case No.%d\n", testCaseCount);
+			SmartBFSMap smartBFSMap = new SmartBFSMap(validMap1);
+			smartBFSMap.getBFSIntersectionOfOceans(true, pw);
+			testCaseCount++;
+			pw.println("==========");
+		}
 
 	}
 
