@@ -310,10 +310,26 @@ class SmartBFSMap extends OceanLandMap {
 		}
 		
 		// TODO calculate the intersection
-		
-		
+		Set<Integer> a = new HashSet<Integer>();
+		int count = 0;
+		for (Map<Integer,Integer> oneZone:reachablesOfEachStartZone.values() ) {
+			if (0 == count) {
+				a = oneZone.keySet();
+			} else {
+				Set<Integer> b = oneZone.keySet();
+				a = IdentifyContinuousBody.getInterSectionOfTwoSets(a, b);
+			}
+		}
+		if (printDebug) {
+			pw.printf("---- Sweeping results by zoneIds:\n");
+			for (int e: a) {
+				pw.printf("%d ",e);
+			}
+			pw.println();
+		}
 		
 		// TODO Output the correct types getTiles from zoneId
+		
 	}
 	
 
@@ -542,16 +558,6 @@ public class IdentifyContinuousBody {
 		// Test 7
 		{
 			pw.printf("Test case No.%d\n", testCaseCount);
-			SmartBFSMap smartBFSMap = new SmartBFSMap(validMap1);
-			smartBFSMap.getBFSIntersectionOfOceans(true, pw);
-			testCaseCount++;
-			pw.println("==========");
-		}
-
-		// Set<Integer> getInterSectionOfTwoSets(Set<Integer> a,Set<Integer> b)
-		// Test 7
-		{
-			pw.printf("Test case No.%d\n", testCaseCount);
 			Set<Integer> a = new HashSet<Integer>();
 			a.add(1);a.add(3);a.add(5);
 			Set<Integer> b = new HashSet<Integer>();
@@ -564,8 +570,13 @@ public class IdentifyContinuousBody {
 			pw.println("==========");
 		}
 
-		 
-		 
+		// Test 8
+		{
+			pw.printf("Test case No.%d\n", testCaseCount);
+			SmartBFSMap smartBFSMap = new SmartBFSMap(validMap1);
+			smartBFSMap.getBFSIntersectionOfOceans(true, pw);
+			testCaseCount++;
+			pw.println("==========");
+		}
 	}
-
 }
