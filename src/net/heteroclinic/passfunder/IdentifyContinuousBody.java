@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -296,22 +297,49 @@ class SmartBFSMap extends OceanLandMap {
 		final int startingZoneType = 0;
 		Map<Integer, List<Integer>> startingZones = positionSystem.get(startingZoneType);
 		Map<Integer, Set<Integer>> reachablesOfEachStartZone = new LinkedHashMap<Integer, Set<Integer>>();
-		for (int startZone: startingZones.keySet()) {
-			Set<Integer> currentReachableZones = new HashSet<Integer>();
+		for (Entry<Integer, List<Integer>> startZone: startingZones.entrySet()) {
+			Set<Integer> currentReachableZones = new LinkedHashSet<Integer>();
+			
+			// TODO Cotinuation of current zone
+			
+			
 		}
+		
+		// TODO calculate the intersection
 	}
 
 	// TODO continuation of each zone (monotone increasing) to build reachable set. 
 	// The other name of continuation is homotopy.
-	public void getReachableZonesByContinuation() {
+	public void getReachableZonesByContinuation(int zoneType,int zoneId,  List<Integer> tilesInZone
+			) {
 		// TODO Iterate though current zone's tiles
-		
+		Set<Integer> neighboringTiles = new LinkedHashSet<Integer>();
+		for (int currentTile :tilesInZone ) {
 			// TODO For each tile put all neighboring tiles a new set
-		
+			int j = currentTile % waterBodyLimit;
+			int i = currentTile / waterBodyLimit;
+			// check west
+			if ( j-1 >=0 ) {
+				neighboringTiles.add(i*waterBodyLimit +j-1);
+			}
+			// check north
+			if ( i-1>=0  ) {
+				neighboringTiles.add((i-1)*waterBodyLimit +j);
+			}
+			// check east
+			if ( j+1 < data[i].length ) {
+				neighboringTiles.add(i*waterBodyLimit +j +1);
+			}
+			// check south
+			if ( i+1 < data.length) {
+				neighboringTiles.add((i+1)*waterBodyLimit +j);
+			}
+
+		}
 		// TODO Loop through the set of neighboring tiles
 
 			// TODO Get its type and ZoneId
-			// TODO Add the ZoneId to set currentReachables
+			// TODO Add the ZoneId to set currentReachables, if the neighbor type > current tile type
 		
 		// TODO Loop through currentReachableZones
 		    // TODO Continuation of each zone by recursive call of getReachableZonesByContinuation
