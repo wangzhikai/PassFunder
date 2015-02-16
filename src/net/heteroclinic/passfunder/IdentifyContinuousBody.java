@@ -448,6 +448,12 @@ public class IdentifyContinuousBody {
 		+ "0 1 2 2 4 3 2 \n"
 		+ "2 1 1 3 3 2 0 \n"
 		+ "0 3 3 3 2 3 3";
+
+	public static final String validMap2 
+	=     "0 0 0 1 2 3 0 \n"
+		+ "0 1 2 4 4 3 2 \n"
+		+ "2 1 1 4 3 2 0 \n"
+		+ "0 3 3 3 2 3 3";
 	
 	public static void main(String[] args) {
 		int testCaseCount = 1;
@@ -588,6 +594,15 @@ public class IdentifyContinuousBody {
 		{
 			pw.printf("Test case No.%d\n", testCaseCount);
 			SmartBFSMap smartBFSMap = new SmartBFSMap(validMap1);
+			smartBFSMap.getBFSIntersectionOfOceans(true, pw);
+			testCaseCount++;
+			pw.println("==========");
+		}
+		
+		// Test 9
+		{
+			pw.printf("Test case No.%d\n", testCaseCount);
+			SmartBFSMap smartBFSMap = new SmartBFSMap(validMap2);
 			smartBFSMap.getBFSIntersectionOfOceans(true, pw);
 			testCaseCount++;
 			pw.println("==========");
